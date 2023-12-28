@@ -27,8 +27,11 @@ function createWindow() {
 
   mainWindow.on('closed', function () {
     mainWindow = null;
+  }); 
+
+  mainWindow.on('blur', () => {
+    mainWindow.setSize(800, 50); 
   });
-  
 }
 
 app.on('ready', function () {
@@ -61,4 +64,9 @@ ipcMain.on('search', function (event, searchTerm) {
 ipcMain.on('enable-node-integration', (event) => {
   mainWindow.webContents.send('enable-node-integration');
 });
+
+ipcMain.on('input-focused', () => {
+  mainWindow.setSize(800, 400); 
+});
+
 
