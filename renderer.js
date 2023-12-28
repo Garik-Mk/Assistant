@@ -7,11 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
         window.api.send('search', searchTerm);
       }
     });
-    searchInput.addEventListener('focus', function () {
-      window.api.send('input-focused');
-    });
-    searchInput.addEventListener('blur', function () {
-      window.api.send('input-blur');
+    searchInput.addEventListener('input', function () {
+      window.api.send('search-input-started');
     });
   });
   

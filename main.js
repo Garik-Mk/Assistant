@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const url = require('url');
 const { PythonShell } = require('python-shell');
@@ -6,10 +6,14 @@ const { PythonShell } = require('python-shell');
 let mainWindow;
 
 function createWindow() {
+  const mainScreen = screen.getPrimaryDisplay();
+  const dimensions = mainScreen.size;
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 50,
-    frame: false, // Убирает рамку окна
+    width: 400,
+    height: 0,
+    x: Math.round((dimensions.width - 400) / 2),
+    y: 0,
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true
@@ -22,15 +26,15 @@ function createWindow() {
     slashes: true
   }));
 
-  // Open dev tools
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', function () {
     mainWindow = null;
   }); 
 
   mainWindow.on('blur', () => {
-    mainWindow.setSize(800, 50); 
+    mainWindow.setSize(400, 0);
+    mainWindow.setPosition(Math.round((dimensions.width - 400) / 2), 0)
   });
 }
 
@@ -65,8 +69,11 @@ ipcMain.on('enable-node-integration', (event) => {
   mainWindow.webContents.send('enable-node-integration');
 });
 
-ipcMain.on('input-focused', () => {
-  mainWindow.setSize(800, 400); 
+ipcMain.on('search-input-started', () => {
+  const mainScreen = screen.getPrimaryDisplay();
+  const dimensions = mainScreen.size;
+  mainWindow.setSize(800, 400);
+  mainWindow.setPosition(Math.round((dimensions.width - 800) / 2), 0)
 });
 
 
